@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Propuesta Centro de Salud Montero · UNISOFT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: brand band, plan picker, two columns (module menu | sticky investment summary), then terms. Unisoft teal + gold. */
+:root{
+  --bg:#f6f8f8; --surface:#ffffff; --surface-2:#eef4f4; --line:#d3e1e2; --fg:#16252b; --muted:#5b6f75;
+  --teal:#0f7e8a; --teal-ink:#0b6670; --teal-soft:#e2f0f1; --gold:#b9821f; --gold-soft:#fbf3e4; --on-teal:#ffffff;
+  --warn:#9a5b0b; --warn-soft:#fff4e0;
+  --f-display:"Sora", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-num:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1719; --surface:#142124; --surface-2:#1a2b2f; --line:#284045; --fg:#e4eef0; --muted:#97adb2;
+  --teal:#2fa8b4; --teal-ink:#5cc3cd; --teal-soft:#16353a; --gold:#e0ab4b; --gold-soft:#2c2416; --on-teal:#06191c;
+  --warn:#f0b866; --warn-soft:#2e2414; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0e1719; --surface:#142124; --surface-2:#1a2b2f; --line:#284045; --fg:#e4eef0; --muted:#97adb2;
+  --teal:#2fa8b4; --teal-ink:#5cc3cd; --teal-soft:#16353a; --gold:#e0ab4b; --gold-soft:#2c2416; --on-teal:#06191c;
+  --warn:#f0b866; --warn-soft:#2e2414; color-scheme:dark }
+
+*{box-sizing:border-box}
+html{color-scheme:light}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* Brand band */
+.band{background:var(--teal);color:var(--on-teal)}
+.band .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:10px;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:700;letter-spacing:.08em;font-size:14px}
+.band small{opacity:.85;font-size:13px}
+
+header.intro .wrap{padding-block:36px 8px}
+.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--teal-ink)}
+header.intro h1{font-size:clamp(26px,4vw,38px);margin-top:6px;line-height:1.15}
+header.intro p{max-width:66ch;color:var(--muted);margin:12px 0 0}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--teal);color:var(--on-teal);font-size:12px;font-weight:700}
+
+section.block{margin-top:34px}
+.sec-title{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.sec-title h2{font-size:20px}
+.sec-title span{color:var(--muted);font-size:14px}
+
+/* Plans */
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.plan{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s, background .15s}
+.plan:hover{border-color:var(--teal)}
+.plan[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-soft);box-shadow:inset 0 0 0 1.5px var(--teal)}
+.plan .pname{font-family:var(--f-display);font-weight:600;font-size:16px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.plan .pfor{font-size:14px;color:var(--muted)}
+.plan .pprice{font-family:var(--f-num);font-weight:600;font-size:18px;margin-top:auto;padding-top:8px}
+.plan .pwas{font-family:var(--f-num);font-size:13px;color:var(--muted);text-decoration:line-through}
+.chip{font-family:var(--f-body);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--gold-soft);color:var(--gold);white-space:nowrap}
+
+/* Main grid */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start}
+.mods{display:flex;flex-direction:column;gap:12px}
+.mod{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);transition:border-color .15s}
+.mod.on{border-color:var(--teal)}
+.mod-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px}
+.mod-code{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.mod-name{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.25}
+.mod-sum{font-size:14px;color:var(--muted);margin-top:2px}
+.mod-price{text-align:right}
+.mod-price .p{font-family:var(--f-num);font-weight:600;font-size:16px;white-space:nowrap}
+.mod-price .m{font-family:var(--f-num);font-size:12px;color:var(--gold);white-space:nowrap}
+.mod-price .w{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.tog{appearance:none;width:26px;height:26px;border-radius:7px;border:2px solid var(--teal);background:var(--surface);display:grid;place-items:center;margin:0;cursor:pointer;flex:none}
+.tog:checked{background:var(--teal)}
+.tog:checked::after{content:"";width:7px;height:13px;border:solid var(--on-teal);border-width:0 2.5px 2.5px 0;transform:translateY(-2px) rotate(45deg)}
+.tog:disabled{cursor:not-allowed;opacity:.75}
+
+.mod details{border-top:1px solid var(--line)}
+.mod summary{list-style:none;cursor:pointer;padding:10px 16px;font-size:14px;font-weight:600;color:var(--teal-ink);display:flex;align-items:center;gap:6px}
+.mod summary::-webkit-details-marker{display:none}
+.mod summary::before{content:"";width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .15s;margin-right:4px}
+.mod details[open] summary::before{transform:rotate(45deg)}
+.det{padding:4px 16px 18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+.det h4{margin:0 0 4px;font-size:14px;font-family:var(--f-body);font-weight:700}
+.det ul{margin:0;padding-left:18px;font-size:14px;color:var(--fg)}
+.det li{margin:2px 0}
+.det .full{grid-column:1 / -1}
+.note{font-size:14px;border-radius:8px;padding:10px 12px;background:var(--surface-2);color:var(--fg)}
+.note.warn{background:var(--warn-soft);color:var(--warn)}
+.note.gold{background:var(--gold-soft)}
+.req{display:none;margin:0 16px 14px}
+.mod.locked .req{display:block}
+
+/* Summary */
+aside.sum{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 16px);background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden}
+.sum-head{background:var(--teal);color:var(--on-teal);padding:14px 16px}
+.sum-head h3{font-size:15px}
+.sum-head .big{font-family:var(--f-num);font-size:30px;font-weight:600;margin-top:4px;line-height:1.1}
+.sum-head .sub{font-size:13px;opacity:.9}
+.sum-body{padding:14px 16px;display:flex;flex-direction:column;gap:14px}
+.lines{list-style:none;margin:0;padding:0;font-size:14px}
+.lines li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.lines li span:last-child{font-family:var(--f-num);white-space:nowrap}
+.lines li.disc span{color:var(--gold);font-weight:600}
+.lines li.empty{color:var(--muted);justify-content:flex-start}
+.lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-size:13px}
+.seg button[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0}
+.kv b{font-family:var(--f-num);font-weight:600;white-space:nowrap}
+.kv.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:7px}
+.copy{width:100%;border:0;border-radius:8px;background:var(--gold);color:#fff;font-weight:700;padding:11px}
+.copy-msg{font-size:13px;color:var(--muted);text-align:center;min-height:1.2em}
+.copy-fallback{width:100%;min-height:120px;font:13px/1.4 var(--f-num);border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--fg);padding:8px}
+.form{display:flex;flex-direction:column;gap:9px}
+.form label{display:flex;flex-direction:column;gap:3px;font-size:13px;font-weight:600;color:var(--muted)}
+.form input,.form textarea{font:15px var(--f-body);color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.form input:focus,.form textarea:focus{border-color:var(--teal);outline:none}
+.form textarea{min-height:64px;resize:vertical}
+.form .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.copy:disabled{opacity:.6;cursor:wait}
+.err{color:var(--warn)}
+.sent{background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:8px;padding:12px;font-size:14px}
+.sent b{display:block;font-family:var(--f-display);font-size:15px;margin-bottom:4px}
+.lockbar{background:var(--gold-soft);border-bottom:1px solid var(--line)}
+.lockbar .wrap{padding-block:10px;font-size:14px}
+body.done .plans,body.done .tog,body.done .seg{pointer-events:none}
+body.done .plan:not([aria-pressed="true"]),body.done .seg button:not([aria-pressed="true"]){opacity:.55}
+
+/* Mobile bottom bar */
+.mbar{display:none}
+
+/* Terms */
+.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel h3{font-size:16px;margin-bottom:8px}
+.panel ul{margin:0;padding-left:18px;font-size:15px}
+.panel li{margin:3px 0}
+.panel p{margin:6px 0 0;font-size:15px}
+.rate{display:flex;align-items:baseline;gap:8px;margin:2px 0 10px}
+.rate b{font-family:var(--f-num);font-size:26px;color:var(--teal-ink)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.incl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.incl div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.incl b{display:block;font-family:var(--f-display);font-weight:600;font-size:15px}
+.incl span{font-size:14px;color:var(--muted)}
+.incl em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:40px}
+
+@media (max-width: 980px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  aside.sum{position:static}
+  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .incl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--teal);color:var(--on-teal);
+    padding:10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    justify-content:space-between;align-items:center;gap:10px}
+  .mbar b{font-family:var(--f-num);font-size:18px}
+  .mbar a{color:var(--on-teal);font-weight:700;font-size:14px}
+  body{padding-bottom:70px}
+}
+@media (max-width: 620px){
+  .plans,.cards2,.incl{grid-template-columns:minmax(0,1fr)}
+  .det{grid-template-columns:minmax(0,1fr)}
+  .mod-head{grid-template-columns:auto minmax(0,1fr)}
+  .mod-price{grid-column:2;text-align:left;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="lockbar" id="lockbar" hidden><div class="wrap" id="lockmsg"></div></div>
+<div class="band"><div class="wrap"><span class="brand">UNISOFT</span><small>Soluciones tecnológicas</small></div></div>
+
+<header class="intro"><div class="wrap">
+  <div class="eyebrow">Propuesta modular · Centro de Salud Montero</div>
+  <h1>Arme el sistema de gestión que su clínica necesita</h1>
+  <p>Lea el detalle de cada módulo y marque los que quiere contratar. El total, el plazo y las formas de pago se calculan solos. Si su selección coincide con un paquete, se aplica el precio del paquete automáticamente.</p>
+  <ol class="steps"><li>Elija un paquete o arme a medida</li><li>Revise el detalle y marque módulos</li><li>Elija alojamiento y forma de pago</li><li>Copie su selección y envíenosla</li></ol>
+</div></header>
+
+<main class="wrap">
+  <section class="block" aria-labelledby="t-plans">
+    <div class="sec-title"><h2 id="t-plans">Paquetes</h2><span>Punto de partida; puede sumar o quitar módulos después.</span></div>
+    <div class="plans" id="plans"></div>
+  </section>
+
+  <section class="block" aria-labelledby="t-mods">
+    <div class="sec-title"><h2 id="t-mods">Módulos</h2><span>Precios en bolivianos (Bs), pago único de desarrollo e implementación.</span></div>
+    <div class="grid">
+      <div class="mods" id="mods"></div>
+      <aside class="sum" id="resumen" aria-live="polite">
+        <div class="sum-head">
+          <h3>Su inversión</h3>
+          <div class="big num" id="s-total">Bs 0</div>
+          <div class="sub" id="s-sub">Pago único · plazo estimado —</div>
+        </div>
+        <div class="sum-body">
+          <div><div class="lbl">Módulos elegidos</div><ul class="lines" id="s-lines"></ul></div>
+          <div>
+            <div class="lbl">Alojamiento</div>
+            <div class="seg" id="host">
+              <button type="button" data-v="cloud" aria-pressed="true">Cloud UNISOFT</button>
+              <button type="button" data-v="own" aria-pressed="false">Servidor propio</button>
+              <button type="button" data-v="client" aria-pressed="false">Cloud de la clínica</button>
+            </div>
+          </div>
+          <div>
+            <div class="lbl">Pagos mensuales</div>
+            <div id="s-monthly"></div>
+          </div>
+          <div>
+            <div class="lbl">Forma de pago</div>
+            <div class="seg" id="pay">
+              <button type="button" data-v="hitos" aria-pressed="true">Por hitos</button>
+              <button type="button" data-v="c6" aria-pressed="false">6 cuotas</button>
+              <button type="button" data-v="c8" aria-pressed="false">8 cuotas</button>
+            </div>
+            <div id="s-pay" style="margin-top:8px"></div>
+          </div>
+          <div>
+            <div class="lbl">Enviar mi selección</div>
+            <form class="form" id="form" novalidate>
+              <label for="f-email">Su correo electrónico<input id="f-email" name="email" type="email" autocomplete="email" required></label>
+              <input class="hp" type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <button type="submit" class="copy" id="send">Enviar mi selección</button>
+              <div class="copy-msg" id="send-msg">Le llegará una copia a su correo. Puede ajustar su selección y volver a enviarla cuando quiera.</div>
+            </form>
+            <div class="sent" id="sent" hidden></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="t-incl">
+    <div class="sec-title"><h2 id="t-incl">Incluido sin costo</h2><span>En cualquier selección.</span></div>
+    <div class="incl">
+      <div><em>Bonificado</em><b>Sitio web institucional</b><span>Hasta 5 páginas: inicio, nosotros, servicios, equipo médico y contacto. Adaptable a celular, botón de WhatsApp, mapa, SSL y SEO básico.</span></div>
+      <div><em>Incluido</em><b>Indicadores y reportes</b><span>Panel de control con atenciones, ocupación, ingresos y egresos, rentabilidad por área y médico, exportable a Excel y PDF.</span></div>
+      <div><em>Incluido</em><b>Garantía de 2 meses por módulo</b><span>Corrección de errores de desarrollo desde la puesta en producción de cada módulo.</span></div>
+      <div><em>Incluido</em><b>Capacitación inicial</b><span>Al personal de cada área al entregar su módulo.</span></div>
+      <div><em>Incluido</em><b>Análisis y diseño funcional</b><span>Relevamiento de los procesos de la clínica antes de desarrollar.</span></div>
+      <div><em>Incluido</em><b>Instalación y puesta en marcha</b><span>En el alojamiento que la clínica elija.</span></div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="t-sup">
+    <div class="sec-title"><h2 id="t-sup">Garantía y soporte</h2></div>
+    <div class="cards2">
+      <div class="panel">
+        <h3>Garantía por módulo</h3>
+        <ul>
+          <li>Cada módulo tiene <b>2 meses de garantía</b> desde su puesta en producción.</li>
+          <li>Si contrata un módulo nuevo, ese módulo trae sus propios 2 meses. La garantía de los módulos ya entregados no se extiende.</li>
+          <li>La garantía cubre errores atribuibles al desarrollo y el acompañamiento inicial.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Soporte por hora, después de la garantía</h3>
+        <div class="rate"><b>Bs 230</b><span>por hora · solo paga lo que usa</span></div>
+        <ul>
+          <li>Corrección de errores del sistema.</li>
+          <li>Consultas de uso por WhatsApp, llamada o acceso remoto, en horario laboral.</li>
+          <li>Mantenimiento: actualizaciones de seguridad y revisión de respaldos.</li>
+          <li>Ajustes menores: tarifas, usuarios, catálogos, plantillas de informes y textos.</li>
+          <li>Recapacitación virtual del personal.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Se cotiza aparte</h3>
+        <ul>
+          <li>Funcionalidades nuevas, reportes nuevos o cambios en un proceso.</li>
+          <li>Cambios de diseño o de pantallas.</li>
+          <li>Integraciones con otros sistemas o equipos; migración de datos.</li>
+          <li>Capacitación presencial o de un área completa.</li>
+          <li>Fallas por mal uso, terceros o infraestructura del cliente.</li>
+        </ul>
+        <p class="note" style="margin-top:12px">Es <b>ajuste</b> si toma menos de 2 horas y no cambia la estructura de datos ni la lógica de un proceso. Todo lo demás es <b>desarrollo</b> y se cotiza.</p>
+      </div>
+      <div class="panel">
+        <h3>Tiempos de respuesta</h3>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Prioridad</th><th>Ejemplo</th><th>Respuesta</th></tr></thead>
+          <tbody>
+            <tr><td><b>Crítica</b></td><td>El sistema no funciona o no se puede cobrar</td><td>4 horas hábiles</td></tr>
+            <tr><td><b>Alta</b></td><td>Un módulo falla pero hay alternativa</td><td>1 día hábil</td></tr>
+            <tr><td><b>Normal</b></td><td>Consultas y ajustes</td><td>3 días hábiles</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="t-cond">
+    <div class="sec-title"><h2 id="t-cond">Condiciones</h2></div>
+    <div class="cards2">
+      <div class="panel">
+        <h3>Alojamiento</h3>
+        <ul>
+          <li><b>Cloud UNISOFT:</b> Bs 350 al mes o Bs 3.600 al año. Configuración, SSL, copias de seguridad y monitoreo.</li>
+          <li><b>Servidor propio:</b> instalación incluida; la clínica asume equipo, internet, energía y respaldo.</li>
+          <li><b>Cloud de la clínica:</b> la clínica contrata el servidor y UNISOFT instala la plataforma.</li>
+          <li>Los requisitos del servidor están en la tabla de abajo.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Pagos y propiedad</h3>
+        <ul>
+          <li><b>Por hitos:</b> 40% al inicio, 30% versión funcional, 20% puesta en producción, 10% cierre y capacitación.</li>
+          <li><b>En cuotas:</b> 40% al inicio y el saldo en 6 u 8 cuotas mensuales.</li>
+          <li>El código fuente pasa a ser de la clínica al completar el pago total.</li>
+          <li>Los datos de pacientes y de la clínica son siempre de la clínica.</li>
+          <li>No incluye servidor, dominio ni equipos. Montos en Bs. Validez: 30 días.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Implementación por fases</h3>
+        <p>La base del sistema entra primero (unas 5 semanas) y la clínica empieza a usarla. Después se suma un módulo a la vez, cada uno con su capacitación y su garantía. El plazo del resumen es la suma estimada de las fases.</p>
+      </div>
+      <div class="panel">
+        <h3>Integración con equipos</h3>
+        <p>La conexión directa con analizadores de laboratorio y ecógrafos, para que los resultados y estudios lleguen solos al sistema, se cotiza aparte según la marca y el modelo de cada equipo.</p>
+      </div>
+      <div class="panel" style="grid-column:1 / -1">
+        <h3>Requisitos del servidor</h3>
+        <p style="margin:0 0 10px">El <b>mínimo</b> permite operar el sistema y el chatbot con un modelo de IA por API. El <b>recomendado</b> da margen para imagenología con muchos estudios y para que el agente del chatbot responda ágil en horas de alta demanda.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Recurso</th><th>Mínimo</th><th>Recomendado</th></tr></thead>
+          <tbody>
+            <tr><td><b>Procesador</b></td><td>4 vCPU</td><td>8 vCPU</td></tr>
+            <tr><td><b>Memoria RAM</b></td><td>8 GB</td><td>16 GB</td></tr>
+            <tr><td><b>Disco del sistema</b></td><td>100 GB SSD</td><td>250 GB SSD NVMe</td></tr>
+            <tr><td><b>Almacenamiento de estudios de imagen</b></td><td>Según volumen de estudios</td><td>1 TB o más, ampliable (disco o NAS dedicado)</td></tr>
+            <tr><td><b>Internet</b></td><td>50 Mbps</td><td>100 Mbps o más, simétrico</td></tr>
+            <tr><td><b>Chatbot con IA</b></td><td>Modelo de IA por API, sin GPU</td><td>Por API; si el modelo corre en el propio servidor, GPU con 16 GB de memoria o más</td></tr>
+            <tr><td><b>Sistema y base de datos</b></td><td>Ubuntu Server 24.04 LTS, PostgreSQL</td><td>Ubuntu Server 24.04 LTS, PostgreSQL</td></tr>
+            <tr><td><b>Red</b></td><td>IP pública fija, HTTPS y firewall</td><td>IP pública fija, HTTPS, firewall y acceso SSH restringido</td></tr>
+            <tr><td><b>Respaldos</b></td><td>Periódicos</td><td>Diarios, automatizados y con copia fuera del servidor</td></tr>
+          </tbody>
+        </table></div>
+        <p style="margin-top:10px;font-size:14px;color:var(--muted)">Servidor físico en la clínica: se recomienda UPS, discos en espejo (RAID 1), protección eléctrica y ventilación.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>UNISOFT · Soluciones tecnológicas · Contacto: Favio Lopez</span><span>Propuesta para Centro de Salud Montero · 5 de noviembre de 2026 · Válida 30 días · v1</span></div></footer>
+
+<div class="mbar" aria-hidden="false"><span>Total <b class="num" id="m-total">Bs 0</b></span><a href="#resumen">Ver resumen</a></div>
+
+<script>
+const MODS = [
+  { id:'base', code:'M1', name:'Base del sistema', req:true, price:10500, weeks:5,
+    sum:'Pacientes, consulta e historia clínica, caja, ingresos y egresos, usuarios e indicadores.',
+    det:[
+      ['Admisión y pacientes',['Ficha única del paciente y datos de contacto','Responsable de pago, seguro o convenio','Médicos, especialidades y tarifario de servicios']],
+      ['Consulta externa e historia clínica',['Panel de pacientes en espera por médico','Atención con diagnósticos CIE-10 y tratamiento','Recetas digitales y órdenes de laboratorio, imagen, cirugía o internación','Historia clínica única con antecedentes, evoluciones y control de versiones']],
+      ['Caja y cuenta del paciente',['Cobro de cualquier servicio, anticipos y garantías','Recibos, devoluciones y cuenta corriente','Arqueo y cierre de caja diario']],
+      ['Control de ingresos y egresos',['Registro de gastos: sueldos, servicios, alquiler, proveedores','Clasificación por categoría y por área','Flujo de caja y utilidad por período']],
+      ['Usuarios y seguridad',['Roles: recepción, médico, enfermería, farmacia, laboratorio, caja, administración','Permisos por usuario y auditoría de cambios']],
+      ['Indicadores (incluido)',['Atenciones, ingresos y egresos en tiempo real','Rentabilidad por área, servicio y médico','Reportes exportables a Excel y PDF']]
+    ]},
+  { id:'citas', code:'M2', name:'Citas y chatbot por WhatsApp', price:2000, monthly:300, weeks:0,
+    sum:'Agenda de la clínica y un chatbot que agenda, confirma y recuerda citas por WhatsApp.',
+    det:[
+      ['Agenda de la clínica',['Citas por médico, especialidad, consultorio o equipo','Disponibilidad, horarios y bloqueos','Reprogramación, inasistencias y lista de espera']],
+      ['Chatbot por WhatsApp',['El paciente agenda solo, con horarios libres en tiempo real','Confirmación con fecha, profesional y ubicación','Recordatorios 24 h y 2 h antes: Confirmo / Cambiar / Cancelar','Derivación a recepción con todo el historial','Aviso de cuándo le toca volver']],
+      ['Mantenimiento mensual Bs 300',['Servidor del chatbot y monitoreo','Número en la API oficial de WhatsApp Business','Ajustes de horarios, servicios y textos']],
+    ],
+    notes:[['gold','Este módulo tiene dos costos: <b>Bs 2.000 de implementación</b> (pago único) y <b>Bs 300 al mes de mantenimiento</b> mientras el chatbot esté activo.'],
+           ['','Meta cobra aparte cada mensaje que la clínica envía primero (recordatorios, confirmaciones), al costo y sin recargo. Como referencia, 800 recordatorios al mes cuestan alrededor de Bs 61.']]},
+  { id:'imagen', code:'M3', name:'Imagenología (RIS + PACS/DICOM)', price:5500, weeks:3,
+    sum:'Agenda por equipo, visor de estudios DICOM e informes radiológicos.',
+    det:[
+      ['Gestión del servicio',['Agenda por equipo: ecógrafo, rayos X, tomógrafo','Lista de trabajo para el técnico','Cobro por estudio y honorario por informe']],
+      ['Estudios e informes',['Recepción de estudios DICOM desde los equipos','Visor integrado a la historia clínica','Informes con plantillas y firma del médico informante','Entrega de resultados al paciente y al médico']]
+    ]},
+  { id:'lab', code:'M4', name:'Laboratorio clínico', price:4500, weeks:2,
+    sum:'Órdenes, toma de muestras con etiqueta, resultados validados e impresos.',
+    det:[
+      ['Recepción y muestras',['Órdenes internas y externas, cobro por examen o perfil','Toma de muestra con etiqueta y código de barras']],
+      ['Resultados',['Catálogo de pruebas con unidades y valores de referencia por edad y sexo','Carga, validación e impresión de resultados','Historial de resultados del paciente']]
+    ]},
+  { id:'farmacia', code:'M5', name:'Farmacia e inventario', price:5500, weeks:3,
+    sum:'Stock por lotes y vencimientos, compras, venta y cargo a pacientes.',
+    det:[
+      ['Inventario',['Medicamentos e insumos con lotes, vencimientos y stock mínimo','Almacenes por área: farmacia, quirófano, enfermería','Alertas de vencimiento y reposición']],
+      ['Movimientos',['Compras, proveedores y kardex (pasan a egresos)','Venta en mostrador y dispensación por receta','Cargo automático a la cuenta del paciente internado o en cirugía']]
+    ],
+    notes:[['','Recomendado si contrata Quirófano u Hospitalización: así los insumos usados se descuentan del stock y se cobran solos.']]},
+  { id:'enf', code:'M6', name:'Enfermería', price:3000, weeks:2,
+    sum:'Signos vitales, administración de medicamentos, procedimientos y turnos.',
+    det:[
+      ['Atención',['Triaje y registro de signos vitales','Administración de medicamentos según indicación, con hora y responsable','Procedimientos cobrables: curaciones, inyectables, nebulizaciones']],
+      ['Organización',['Notas de enfermería','Entrega de turno','Solicitud de insumos a farmacia']]
+    ]},
+  { id:'quir', code:'M7', name:'Quirófano', price:4500, weeks:2, needs:'enf',
+    sum:'Programación de cirugías, cirugía segura, protocolo operatorio y consumos.',
+    det:[
+      ['Programación',['Cirugías por sala, cirujano, anestesiólogo y equipo','Consentimiento informado']],
+      ['Acto quirúrgico',['Lista de verificación de cirugía segura (OMS)','Protocolo operatorio y registro de anestesia','Consumo de insumos, uso de sala y paquetes quirúrgicos a la cuenta','Honorarios del equipo quirúrgico']]
+    ],
+    notes:[['warn','Requiere el módulo de <b>Enfermería</b>; se agrega automáticamente.']]},
+  { id:'hosp', code:'M8', name:'Hospitalización', price:5500, weeks:3, needs:'enf',
+    sum:'Ingreso, mapa de camas, evoluciones, cuenta en tiempo real y alta.',
+    det:[
+      ['Internación',['Ingreso del paciente y mapa de camas en tiempo real','Evoluciones médicas, indicaciones e interconsultas']],
+      ['Cuenta y alta',['Cargo diario automático de habitación, servicios y consumos','Estado de cuenta en tiempo real','Alta médica y administrativa, epicrisis']]
+    ],
+    notes:[['warn','Requiere el módulo de <b>Enfermería</b>; se agrega automáticamente.']]}
+];
+const PLANS = [
+  { id:'esencial', name:'Esencial', for:'Consulta externa con citas por WhatsApp y control de caja', mods:['base','citas'], price:11500 },
+  { id:'diag', name:'Diagnóstico', for:'Clínica con imagenología y laboratorio', mods:['base','citas','imagen','lab'], price:20500, rec:true },
+  { id:'integral', name:'Integral', for:'Clínica con quirófano, internación y farmacia', mods:MODS.map(m=>m.id), price:36000 },
+  { id:'custom', name:'A medida', for:'Elija módulo por módulo; si coincide con un paquete, se aplica su precio', mods:null }
+];
+const HOST = { cloud:{label:'Alojamiento Cloud UNISOFT', m:350}, own:{label:'Servidor propio de la clínica', m:0}, client:{label:'Cloud contratado por la clínica', m:0} };
+const byId = Object.fromEntries(MODS.map(m=>[m.id,m]));
+const bs = n => 'Bs ' + Math.round(n).toLocaleString('es-BO').replace(/,/g,'.');
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const money = n => 'Bs ' + fmt(n);
+
+let sel = new Set(['base','citas','imagen','lab']);
+let planPick = 'diag', host = 'cloud', pay = 'hitos';
+
+function sumMods(ids){ return ids.reduce((a,id)=>a+byId[id].price,0); }
+function pricing(){
+  const ids = [...sel];
+  let best = { total:sumMods(ids), plan:null };
+  for (const p of PLANS){
+    if (!p.mods || !p.mods.every(id=>sel.has(id))) continue;
+    const extra = ids.filter(id=>!p.mods.includes(id));
+    const t = p.price + sumMods(extra);
+    if (t < best.total) best = { total:t, plan:p, extra };
+  }
+  best.list = sumMods(ids);
+  return best;
+}
+function weeks(){ return [...sel].reduce((a,id)=>a+byId[id].weeks,0); }
+function required(id){ return MODS.some(m=>m.needs===id && sel.has(m.id)); }
+
+function renderPlans(){
+  const el = document.getElementById('plans');
+  el.innerHTML = PLANS.map(p=>{
+    const list = p.mods ? sumMods(p.mods) : 0;
+    return `<button type="button" class="plan" data-plan="${p.id}" aria-pressed="${planPick===p.id}">
+      <span class="pname">${p.name}${p.rec?'<span class="chip">Recomendado</span>':''}</span>
+      <span class="pfor">${p.for}</span>
+      ${p.mods?`<span class="pwas">${money(list)}</span><span class="pprice">${money(p.price)}</span>`:`<span class="pprice" style="font-family:var(--f-body);font-size:15px">Arme su selección</span>`}
+    </button>`;}).join('');
+  el.querySelectorAll('.plan').forEach(b=>b.addEventListener('click',()=>{
+    const p = PLANS.find(x=>x.id===b.dataset.plan);
+    planPick = p.id;
+    if (p.mods) sel = new Set(p.mods);
+    update();
+  }));
+}
+
+function renderMods(){
+  const el = document.getElementById('mods');
+  el.innerHTML = MODS.map(m=>`
+    <article class="mod" id="mod-${m.id}">
+      <div class="mod-head">
+        <input type="checkbox" class="tog" id="chk-${m.id}" data-id="${m.id}" aria-label="Agregar ${m.name}">
+        <label for="chk-${m.id}" style="cursor:pointer;min-width:0">
+          <div class="mod-code">${m.code}${m.req?' · Obligatorio':''}</div>
+          <div class="mod-name">${m.name}</div>
+          <div class="mod-sum">${m.sum}</div>
+        </label>
+        <div class="mod-price">
+          <div class="p">${money(m.price)}</div>
+          ${m.monthly?`<div class="m">+ ${money(m.monthly)} / mes</div>`:''}
+          <div class="w">${m.weeks?`${m.weeks} semanas`:'En paralelo'}</div>
+        </div>
+      </div>
+      <p class="note warn req" id="req-${m.id}">Requerido por Quirófano u Hospitalización.</p>
+      <details${m.req?' open':''}>
+        <summary>Ver qué incluye</summary>
+        <div class="det">
+          ${m.det.map(([h,items])=>`<div><h4>${h}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('')}
+          ${(m.notes||[]).map(([k,t])=>`<p class="note ${k} full">${t}</p>`).join('')}
+        </div>
+      </details>
+    </article>`).join('');
+  el.querySelectorAll('.tog').forEach(c=>c.addEventListener('change',()=>{
+    const id = c.dataset.id;
+    if (c.checked) { sel.add(id); const n = byId[id].needs; if (n) sel.add(n); }
+    else sel.delete(id);
+    planPick = 'custom';
+    update();
+  }));
+}
+
+function bindSeg(id, set){
+  document.querySelectorAll(`#${id} button`).forEach(b=>b.addEventListener('click',()=>{
+    set(b.dataset.v);
+    document.querySelectorAll(`#${id} button`).forEach(x=>x.setAttribute('aria-pressed', x===b));
+    update();
+  }));
+}
+
+function update(){
+  sel.add('base');
+  MODS.forEach(m=>{ if (MODS.some(x=>x.needs===m.id && sel.has(x.id))) sel.add(m.id); });
+  // plan highlight follows exact match
+  const exact = PLANS.find(p=>p.mods && p.mods.length===sel.size && p.mods.every(id=>sel.has(id)));
+  planPick = exact ? exact.id : 'custom';
+  document.querySelectorAll('.plan').forEach(b=>b.setAttribute('aria-pressed', b.dataset.plan===planPick));
+
+  MODS.forEach(m=>{
+    const c = document.getElementById('chk-'+m.id), card = document.getElementById('mod-'+m.id);
+    const locked = m.req || required(m.id);
+    c.checked = sel.has(m.id); c.disabled = locked;
+    card.classList.toggle('on', sel.has(m.id));
+    card.classList.toggle('locked', !m.req && required(m.id));
+  });
+
+  const pr = pricing(), w = weeks();
+  document.getElementById('s-total').textContent = money(pr.total);
+  document.getElementById('m-total').textContent = money(pr.total);
+  document.getElementById('s-sub').textContent = `Pago único · plazo estimado ${w} semanas`;
+
+  const lines = MODS.filter(m=>sel.has(m.id)).map(m=>`<li><span>${m.name}</span><span>${money(m.price)}</span></li>`);
+  if (pr.plan) lines.push(`<li class="disc"><span>Precio paquete ${pr.plan.name}</span><span>− ${money(pr.list-pr.total)}</span></li>`);
+  lines.push(`<li><span>Sitio web, indicadores, capacitación</span><span>Incluido</span></li>`);
+  document.getElementById('s-lines').innerHTML = lines.join('');
+
+  const chat = sel.has('citas') ? byId.citas.monthly : 0, h = HOST[host].m;
+  document.getElementById('s-monthly').innerHTML =
+    (chat?`<div class="kv"><span>Mantenimiento chatbot</span><b>${money(chat)}</b></div>`:'') +
+    `<div class="kv"><span>${HOST[host].label}</span><b>${h?money(h):'Por cuenta de la clínica'}</b></div>` +
+    `<div class="kv"><span>Soporte (después de la garantía)</span><b>Bs 230 / hora</b></div>` +
+    `<div class="kv tot"><span>Fijo mensual</span><b>${money(chat+h)}</b></div>`;
+
+  const T = pr.total; let payHtml = '';
+  if (pay==='hitos'){
+    payHtml = [['Inicio del proyecto',.4],['Versión funcional',.3],['Puesta en producción',.2],['Cierre y capacitación',.1]]
+      .map(([k,p])=>`<div class="kv"><span>${k} (${p*100}%)</span><b>${money(T*p)}</b></div>`).join('');
+  } else {
+    const n = pay==='c6'?6:8;
+    payHtml = `<div class="kv"><span>Pago inicial (40%)</span><b>${money(T*.4)}</b></div><div class="kv"><span>${n} cuotas mensuales</span><b>${money(T*.6/n)}</b></div>`;
+  }
+  document.getElementById('s-pay').innerHTML = payHtml + `<div class="kv tot"><span>Total</span><b>${money(T)}</b></div>`;
+}
+
+function summaryText(){
+  const pr = pricing(), chat = sel.has('citas') ? 300 : 0, h = HOST[host].m;
+  const payTxt = pay==='hitos' ? 'Por hitos (40/30/20/10)' : `40% inicial + ${pay==='c6'?6:8} cuotas`;
+  return ['Propuesta UNISOFT · Centro de Salud Montero',
+    'Módulos: ' + MODS.filter(m=>sel.has(m.id)).map(m=>m.name).join(', '),
+    pr.plan ? `Precio de paquete aplicado: ${pr.plan.name}` : '',
+    `Inversión única: ${money(pr.total)}`,
+    `Plazo estimado: ${weeks()} semanas`,
+    `Alojamiento: ${HOST[host].label}`,
+    `Fijo mensual: ${money(chat+h)}` + (chat?' (incluye mantenimiento del chatbot)':''),
+    'Soporte después de la garantía: Bs 230 por hora',
+    `Forma de pago: ${payTxt}`].filter(Boolean).join('\n');
+}
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRZAZcI9H9xHW5xZ6qFrEU3Eh5wemkvtt_fGvmRX-TQ0byyIKgVXBUZcHaLOuVNfQhWg/exec';
+const LOCK_KEY = 'unisoft-centro-salud-montero';
+const store = {
+  get(){ try { return JSON.parse(localStorage.getItem(LOCK_KEY) || 'null'); } catch(e){ return null; } },
+  set(v){ try { localStorage.setItem(LOCK_KEY, JSON.stringify(v)); } catch(e){} }
+};
+function lockPage(rec){
+  sel = new Set(rec.sel); host = rec.host; pay = rec.pay;
+  document.querySelectorAll('#host button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===host));
+  document.querySelectorAll('#pay button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===pay));
+  update();
+  document.body.classList.add('done');
+  document.querySelectorAll('.tog').forEach(c=>c.disabled = true);
+  document.querySelectorAll('.plan, .seg button').forEach(b=>b.disabled = true);
+  document.getElementById('form').hidden = true;
+  const s = document.getElementById('sent'); s.hidden = false;
+  s.innerHTML = `<b>Selección enviada</b>Gracias. Recibimos su selección el ${rec.fecha} y le enviamos una copia a ${esc(rec.email)}. Nos pondremos en contacto con usted.`;
+  document.getElementById('lockbar').hidden = false;
+  document.getElementById('lockmsg').textContent = `Esta propuesta ya fue enviada el ${rec.fecha}. Se muestra la selección enviada; para cambiarla, contáctenos.`;
+}
+function esc(t){ return String(t).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+document.getElementById('form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const f = e.target, msg = document.getElementById('send-msg'), btn = document.getElementById('send');
+  const email = f.email.value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ msg.innerHTML = '<span class="err">Escriba un correo válido para recibir su copia.</span>'; f.email.focus(); return; }
+  if (f._honey.value) return;
+  const pr = pricing(), chat = sel.has('citas') ? 300 : 0, h = HOST[host].m;
+  const payTxt = pay==='hitos' ? 'Por hitos (40/30/20/10)' : `40% inicial + ${pay==='c6'?6:8} cuotas de ${money(pr.total*.6/(pay==='c6'?6:8))}`;
+  const fecha = new Date().toLocaleString('es-BO', { dateStyle:'long', timeStyle:'short' });
+  const filas = [
+    ['Correo del cliente', email],
+    ['Módulos', MODS.filter(m=>sel.has(m.id)).map(m=>`${m.code} ${m.name}`).join(', ')],
+    ['Paquete aplicado', pr.plan ? pr.plan.name : 'A medida'],
+    ['Inversión única', money(pr.total)],
+    ['Plazo estimado', `${weeks()} semanas`],
+    ['Alojamiento', HOST[host].label],
+    ['Fijo mensual', money(chat+h) + (chat ? ' (incluye mantenimiento del chatbot Bs 300)' : '')],
+    ['Soporte', 'Bs 230 por hora después de la garantía'],
+    ['Forma de pago', payTxt],
+    ['Fecha de envío', fecha]
+  ];
+  btn.disabled = true; msg.textContent = 'Enviando…';
+  try {
+    const r = await fetch(ENDPOINT, { method:'POST', body: JSON.stringify({ cliente: 'Centro de Salud Montero', email, filas }) });
+    const j = await r.json().catch(()=>({}));
+    if (!r.ok || String(j.success) !== 'true') throw new Error(j.message || 'No se pudo enviar');
+    btn.disabled = false; btn.textContent = 'Enviar otra selección';
+    msg.innerHTML = `<b>Selección enviada</b> (${fecha}). Le enviamos una copia a ${esc(email)}. Si ajusta su selección, puede volver a enviarla.`;
+  } catch(err){
+    btn.disabled = false;
+    const m = String(err && err.message || '');
+    if (err instanceof TypeError) {
+      msg.innerHTML = '<span class="err">No hay conexión con el servicio de envío. Revise su internet e intente de nuevo.</span>';
+    } else {
+      msg.innerHTML = '<span class="err">No se pudo enviar: ' + esc(m || 'error desconocido') + '</span>';
+    }
+    console.error('Envío:', err);
+  }
+});
+
+renderPlans(); renderMods();
+bindSeg('host', v=>host=v); bindSeg('pay', v=>pay=v);
+update();
+
+</script>
+</body>
+</html>
